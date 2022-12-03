@@ -5,3 +5,7 @@
 /.vs
 /LettersToSanta/.vs/LettersToSanta
 /LettersToSanta/.vs/ProjectEvaluation
+/LettersToSanta/CognitiveServicesLibrary/bin/Debug/net6.0
+/LettersToSanta/CognitiveServicesLibrary/obj
+/LettersToSanta/DatabaseLibrary/bin/Debug/net6.0
+/LettersToSanta/DatabaseLibrary/obj
