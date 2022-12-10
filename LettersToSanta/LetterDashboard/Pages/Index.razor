@@ -1,0 +1,47 @@
+﻿@page "/"
+
+@using DatabaseLibrary.Models;
+@using LetterDashboard.Data;
+@inject DatabaseService _dbService;
+@inject NavigationManager NavManager;
+
+<PageTitle>Index</PageTitle>
+
+@if (letters == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>FileName</th>
+                <th>Needs Attention</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var letter in letters)
+            {
+                <tr @onclick="() => ViewLetter(letter.Id, letter.PartitionKey)">
+                    <td>@letter.FileName</td>
+                    <td>@letter.NeedsAttention</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<SantaLetter>? letters;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var unReadLetters = await _dbService.GetLetters();
+        letters = unReadLetters.Where(l => l.IsLetter).ToList();
+    }
+
+    private void ViewLetter(string letterId, string partitionKey){
+        NavManager.NavigateTo("letter/" + letterId + "/" + partitionKey);
+    }
+}

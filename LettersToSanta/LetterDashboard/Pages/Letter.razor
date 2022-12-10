@@ -1,0 +1,45 @@
+﻿@page "/letter/{Id}/{PartitionKey}"
+
+@using DatabaseLibrary.Models;
+@using LetterDashboard.Data;
+@inject DatabaseService _dbService;
+@inject IConfiguration _configuration;
+
+<h3>Letter</h3>
+
+<div style="width: 100%; display: flex; flex-direction:row; flex-wrap:nowrap">
+<div style="flex: 1 0 auto; width: 50%;">
+    <img alt="" src="@ImageUrl" style="height:600px;width:400px;" />
+</div>
+
+@if(LetterRecord != null && LetterRecord.Content != null){
+    <div style="flex: 1 0 auto; width: 50%;">
+        <textarea style="height: 600px;" id="letterText" name="letterText" class="form-control" placeholder="Letter text" aria-label="Input group example" aria-describedby="basic-addon1" @bind="LetterContent"></textarea>
+    </div>
+}
+</div>
+
+@code {
+    [Parameter]
+    public string? Id { get; set; }
+    [Parameter]
+    public string? PartitionKey { get; set; }
+
+    private SantaLetter LetterRecord = new SantaLetter();
+
+    private string ImageUrl = string.Empty;
+
+    private string LetterContent = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        LetterRecord = await _dbService.GetLetter(Id, PartitionKey);
+        if(LetterRecord != null)
+            ImageUrl = _configuration["StorageUrl"] + LetterRecord.FileName;
+        if(LetterRecord != null && LetterRecord.Content != null){
+            foreach(var phrase in LetterRecord.Content){
+                LetterContent += phrase + "\n";
+            }
+        }
+    }
+}
